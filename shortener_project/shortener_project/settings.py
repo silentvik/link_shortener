@@ -9,7 +9,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = environ.get('SECRET_KEY')
 DEBUG = int(environ.get('DEBUG', default=0))
-ALLOWED_HOSTS = environ.get('ALLOWED_HOSTS').split(' ')
+ALLOWED_HOSTS = ['*']
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -86,8 +86,9 @@ USE_I18N = True
 USE_L10N = True
 USE_TZ = True
 
+STATIC_ROOT = '/static/'
 STATIC_URL = '/static/'
 
-
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-SITE_URL = "http://localhost:8000/"
+SITE_URL = environ.get('SITE_URL')
+print(f"SITE_URL = {SITE_URL}")
