@@ -1,0 +1,56 @@
+{% extends 'shortener_app/base.html' %}
+{% block content %}
+{% if not user.is_authenticated %}
+    <h2>To view links, you need to log in:</h2>
+    <br>
+    <a href="{% url 'login' %}">Login</a>
+    <br>
+    
+{% else %}
+    {%if view_page == 0 %}
+        <h2>You haven't created any short links yet.</h2>
+    {%elif not view_page%}
+        <h2>Page 404</h2>
+        <h2>Something wrong with your chosen page.</h2>
+    
+    {%else%}
+        <h2>My shorten urls:</h2>
+        <h3>Current page = {{view_page}}</h3>
+
+        <table cellpadding="10">
+            <tr>
+                <td><strong>id</strong></td>
+                <td><strong>short variant</strong></td>
+                <td align="center"><strong>original</strong></td>
+                <td><strong>used</strong></td>
+                <td align="center"><strong>created at</strong></td>
+            </tr>
+            <br>
+            {% for url in urls_list%}
+                <tr>
+                    <td align="center">{{url.number}}</td>
+                    <td>{{url.short_url}}</td>
+                    <td align="center">{{url.real_url}}</td>
+                    <td align="center">{{url.used_count}}</td>
+                    <td>{{url.creation_date}}</td>
+                </tr>
+            {%endfor%}
+        </table>
+
+        <table cellpadding="12">
+            <tr>
+                {%if prev_page_url %}
+                    <td><a href="{{prev_page_url}}"><< prev page</a></td>
+                {%endif%}
+                {%if next_page_url %}
+                    <td><a href="{{next_page_url}}">next page >></a></td>
+                {%endif%}
+            </tr>
+        </table>
+    
+    {%endif%}
+
+{%endif%}
+<br>
+<a href="{% url 'home' %}">Back to home</a>
+{% endblock %}

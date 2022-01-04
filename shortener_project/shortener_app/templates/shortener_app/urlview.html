@@ -1,0 +1,26 @@
+{% extends 'shortener_app/base.html' %}
+{% block content %}
+<h2>Shortener</h2>
+
+{% if current_username %}
+    <h4>Logged in as {{user.username}}</h4>
+    <a href="{% url 'logout' %}">Logout</a>
+    <br><br>
+    <a href="{% url 'urlslist' %}">View my urls</a>
+{%else%}
+    <a href="{% url 'register' %}">SignUp</a>
+    <br><br>
+    <a href="{% url 'login' %}">Login</a>
+{%endif%}
+<br>
+<br>
+<form method="post">
+    {% csrf_token %}
+    {{form}}
+    <input type="submit" value="Shorten!">
+</form>
+
+{% if short_url %}
+    <h4>Short url: {{short_url}}</h4>
+{%endif%}
+{% endblock %}

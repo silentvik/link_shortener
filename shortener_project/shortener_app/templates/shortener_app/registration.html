@@ -1,0 +1,58 @@
+{% extends 'shortener_app/base.html' %}
+{% block content %}
+  <h2>User Registration</h2>
+
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-row">
+            <input type="text" name="username" id="username" class="input-text" placeholder="username" required>
+        </div>
+        {% if form.username.errors %}
+            {% for error in form.username.errors%}
+                <ul style="font-family:Arial, sans-serif;font-size:15px;">{{ error|escape }}</ul>
+            {%endfor%}
+        {%endif%}
+        <br>
+        <div class="form-row">
+            <input type="text" name="email" id="email" class="input-text" placeholder="email (optional)">
+        </div>
+        {% if form.email.errors %}
+            {% for error in form.email.errors%}
+                <ul style="font-family:Arial, sans-serif;font-size:15px;">{{ error|escape }}</ul>
+            {%endfor%}
+        {%endif%}
+        <br>
+        <div class="form-row">
+            <input type="password" name="password" id="password" class="input-text" placeholder="password" required>
+        </div>
+        <br>
+        {% if form.password.errors %}
+            {% for error in form.password.errors%}
+                <li style="font-family:Arial, sans-serif;font-size:15px;">{{ error|escape }}</li>
+            {%endfor%}
+        {%endif%}
+
+        <div class="form-row">
+            <input type="password" name="re_password" id="re_password" class="input-text" placeholder="re_password" required>
+        </div>
+        <br>
+        {% if form.re_password.errors %}
+            {% for error in form.re_password.errors%}
+                <li style="font-family:Arial, sans-serif;font-size:15px;">{{ error|escape }}</li>
+            {%endfor%}
+            <br>
+        {%endif%}
+        <tr>
+            <td><input type="submit" value="Submit"></td>
+        </tr>
+    </form>
+
+    <h3>Already have an  account? Please, login:</li>
+    <br>
+    <a href="{% url 'login' %}">login</a>
+
+    <h3>Back to home:</li>
+    <br>
+    <a href="{% url 'home' %}">home</a>
+
+{% endblock %}
