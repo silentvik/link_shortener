@@ -22,9 +22,8 @@ class UserRegistrationForm(forms.ModelForm):
         return cd['re_password']
 
     def clean_email(self):
-        print(f"self.cleaned_data['email']={self.cleaned_data['email']}")
         if self.cleaned_data['email']:
-            user = User.objects.get(email=self.cleaned_data['email'])
+            user = User.objects.filter(email=self.cleaned_data['email'])
             if user:
                 raise forms.ValidationError(
                     "This email is already in use"

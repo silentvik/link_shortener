@@ -1,0 +1,14 @@
+****************************************************************************************************************************
+select b.client_number, count(t1.outcome) as Побед, count(t2.outcome) as Поражений
+ FROM bid b
+ LEFT JOIN event_value t1 ON b.play_id=t1.play_id and t1.value=b.coefficient and t1.outcome='win'
+ LEFT JOIN event_value t2 ON b.play_id=t2.play_id and t2.value=b.coefficient and t2.outcome='lose'
+ GROUP BY b.client_number;
+****************************************************************************************************************************
+select ee.GAME as game, ee.GAMES as games_count
+ FROM (SELECT DISTINCT IF(ee.home_team<ee.away_team,CONCAT_WS('-', ee.home_team, ee.away_team),CONCAT_WS('-', ee.away_team, ee.home_team)) as GAME,
+ COUNT(*) as GAMES
+ FROM event_entity ee GROUP BY GAME) ee
+ ORDER BY ee.GAMES ASC,
+ ee.GAME ASC;
+****************************************************************************************************************************

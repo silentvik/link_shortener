@@ -1,18 +1,15 @@
 """
-    Django settings for shortener_project project.
+    Django settings for shortener_project.
 """
-
+from os import environ
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
-SECRET_KEY = (
-    'django-insecure-4ll^29h%$n)bcq_by3_3eh6g_74g^3l16gs!pid*-=t8egqiu#'
-)
-DEBUG = True
-ALLOWED_HOSTS = []
-
+SECRET_KEY = environ.get('SECRET_KEY')
+DEBUG = int(environ.get('DEBUG', default=0))
+ALLOWED_HOSTS = environ.get('ALLOWED_HOSTS').split(' ')
 
 INSTALLED_APPS = [
     'django.contrib.admin',
