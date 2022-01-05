@@ -1,6 +1,6 @@
 # Link shortener
-<b> Custom link shortener (only functionality so far, no css/js).</b><br>
-
+<b> Custom link shortener (only functionality, no css/js). </b><br>
+(Test task)
 <br>
 <br>
 
