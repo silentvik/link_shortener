@@ -15,6 +15,7 @@
 
 <b>Run tests:</b>
 <ul>1. cd shortener_project</ul>
-<ul>2. pip install -r requirements.txt</ul>
-<ul>3. (run makemigrations and migrate)</ul>
-<ul>4. pytest -s --showlocals</ul>
+<ul>2. source your/venv</ul>
+<ul>3. pip install -r requirements.txt</ul>
+<ul>4. (run makemigrations and migrate)</ul>
+<ul>5. pytest -s --showlocals</ul>
