@@ -1,5 +1,5 @@
 # Link shortener
-<b> Custom link shortener only functional so far, no frills.</b><br>
+<b> Custom link shortener (only functionality so far, no css/js).</b><br>
 
 <br>
 <br>
