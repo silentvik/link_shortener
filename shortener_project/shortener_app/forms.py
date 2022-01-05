@@ -1,6 +1,8 @@
 from django import forms
 from django.contrib.auth import get_user_model
 
+from shortener_app.services import form_services
+
 User = get_user_model()
 
 
@@ -45,7 +47,22 @@ class UserRegistrationForm(forms.ModelForm):
 
 
 class UrlForm(forms.Form):
-    real_url = forms.CharField(label='Your url')
+    forbidden_chars = form_services.get_forbidden_url_chars()
+
+    real_url = forms.CharField(label='Long url')
+
+    def clean_real_url(self):
+        cd = self.cleaned_data['real_url']
+        if cd == '':
+            msg = 'Please enter the link.'
+            self.add_error('real_url', msg)
+        else:
+            msg = 'The link does not comply with the service restrictions.'
+            for char in self.forbidden_chars:
+                if char in cd:
+                    self.add_error('real_url', msg)
+                    break
+        return cd
 
 
 class UserLoginForm(forms.Form):

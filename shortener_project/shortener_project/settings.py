@@ -9,7 +9,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 SECRET_KEY = environ.get('SECRET_KEY', 'foo')
-DEBUG = int(environ.get('DEBUG', default=0))
+DEBUG = int(environ.get('DEBUG', default=1))
 ALLOWED_HOSTS = ['*']
 
 INSTALLED_APPS = [
@@ -19,7 +19,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    # 'shortener_app',
     'shortener_app.apps.ShortenerAppConfig'
 ]
 
@@ -93,4 +92,4 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = []
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-SITE_URL = environ.get('SITE_URL')
+SITE_URL = environ.get('SITE_URL', 'http://0.0.0.0:8000/')

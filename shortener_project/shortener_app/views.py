@@ -96,14 +96,12 @@ class ShortUrlView(CreateView):
     """
 
     def get(self, request):
-        form = UrlForm()
         current_user = self.request.user
         current_username = view_services.get_username_or_none(current_user)
         response = render(
             request,
             'shortener_app/urlview.html',
             context={
-                'form': form,
                 'current_username': current_username,
             }
         )
