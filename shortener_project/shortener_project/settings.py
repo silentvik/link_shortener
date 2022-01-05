@@ -1,13 +1,14 @@
 """
     Django settings for shortener_project.
 """
-from os import environ
+
+from os import environ, path
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
-SECRET_KEY = environ.get('SECRET_KEY')
+SECRET_KEY = environ.get('SECRET_KEY', 'foo')
 DEBUG = int(environ.get('DEBUG', default=0))
 ALLOWED_HOSTS = ['*']
 
@@ -18,7 +19,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'shortener_app',
+    # 'shortener_app',
+    'shortener_app.apps.ShortenerAppConfig'
 ]
 
 MIDDLEWARE = [
@@ -86,9 +88,9 @@ USE_I18N = True
 USE_L10N = True
 USE_TZ = True
 
-STATIC_ROOT = '/static/'
+STATIC_ROOT = path.join(BASE_DIR, '/static/')
 STATIC_URL = '/static/'
+STATICFILES_DIRS = []
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 SITE_URL = environ.get('SITE_URL')
-print(f"SITE_URL = {SITE_URL}")

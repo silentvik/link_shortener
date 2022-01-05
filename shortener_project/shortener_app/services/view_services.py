@@ -1,6 +1,8 @@
 from math import ceil
 
 from django.conf import settings
+from django.contrib.auth import authenticate, login
+from shortener_app.services import model_services
 
 
 def validate_page(view_page, max_page):
@@ -19,7 +21,7 @@ def validate_page(view_page, max_page):
 
 
 def accurate_string_datetime(date):
-    """[Summary]
+    """
         Converts datetime to accurate readable string version.
         Args:
             date ([datetime.datetime])
@@ -47,7 +49,7 @@ def edit_urls_list(urls_list, max_big_url_len):
         then this function should be rewritten.
     """
 
-    for number, url in enumerate(urls_list, max_big_url_len):
+    for number, url in enumerate(urls_list):
         url.number = number+1
         url.short_url = f"{settings.SITE_URL}{url.short_url}"
         if len(url.real_url) > max_big_url_len:
@@ -86,3 +88,42 @@ def get_max_page(len_urls_list, paginate_by):
     """
 
     return ceil(len_urls_list / paginate_by)
+
+
+def get_username_or_none(current_user):
+    """
+        Returns current username or None (if not authenticated)
+    """
+
+    if not current_user.is_anonymous:
+        return current_user.username
+    return None
+
+
+def get_short_url(real_url, current_user):
+    """
+        Returns a short url with SITE domain prefix.
+    """
+    url_inst = model_services.create_url(real_url, current_user)
+    return f'{settings.SITE_URL}{url_inst.short_url}'
+
+
+def user_auth_login(request, form):
+    """
+        Returns bool, the result of user auth and login success
+    """
+    user = authenticate(
+        username=form.cleaned_data['username'],
+        password=form.cleaned_data['password']
+    )
+    if user is not None:
+        login(request, user)
+        return True
+    return False
+
+
+def process_user_registration(request, form, login_func=user_auth_login):
+    new_user = form.save(commit=False)
+    new_user.set_password(form.cleaned_data['password'])
+    new_user.save()
+    login_func(request, form)

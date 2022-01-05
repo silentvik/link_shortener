@@ -1,11 +1,25 @@
+Запросы в БД (тестовое задание)
+
+1. Тут все просто.
+Запрос:
 ****************************************************************************************************************************
-select b.client_number, count(t1.outcome) as Побед, count(t2.outcome) as Поражений
+SELECT b.client_number, count(t1.outcome) as Побед, count(t2.outcome) as Поражений
  FROM bid b
  LEFT JOIN event_value t1 ON b.play_id=t1.play_id and t1.value=b.coefficient and t1.outcome='win'
  LEFT JOIN event_value t2 ON b.play_id=t2.play_id and t2.value=b.coefficient and t2.outcome='lose'
  GROUP BY b.client_number;
 ****************************************************************************************************************************
-select ee.GAME as game, ee.GAMES as games_count
+
+2. Приложив массу усилий, так и не понял по какому принципу отсортированы строки "game" 
+(т.е. почему Novara-Udinese идет первее, чем Brescia-Genoa)
+Сделал большое кол-во запросов и вычислений по данным всех таблиц (выиграла ли команда/были ли ставки/символы(названий)/play_id/кто где играет и т.д.),
+2 часа делал различные запросы, но так и не нашел искомой взаимосвязи.
+Пришел к выводу, что есть вероятность отсутствия сортировки по этому полю.
+Если Вы скажете мне, как Вы хотите чтобы была отсортирована выдача (помимо games_count) - так и будет сделано.
+Пока что отсортировал по event_entity.game ASC.
+Запрос:
+****************************************************************************************************************************
+SELECT ee.GAME as game, ee.GAMES as games_count
  FROM (SELECT DISTINCT IF(ee.home_team<ee.away_team,CONCAT_WS('-', ee.home_team, ee.away_team),CONCAT_WS('-', ee.away_team, ee.home_team)) as GAME,
  COUNT(*) as GAMES
  FROM event_entity ee GROUP BY GAME) ee

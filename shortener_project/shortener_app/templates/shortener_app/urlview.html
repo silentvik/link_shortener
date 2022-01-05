@@ -1,4 +1,6 @@
 {% extends 'shortener_app/base.html' %}
+{% block title %}Home page{% endblock %}
+
 {% block content %}
 <h2>Shortener</h2>
 
@@ -17,7 +19,7 @@
 <form method="post">
     {% csrf_token %}
     {{form}}
-    <input type="submit" value="Shorten!">
+    <input type="submit" value="Shorten it!">
 </form>
 
 {% if short_url %}

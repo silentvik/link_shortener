@@ -4,7 +4,7 @@ export SECRET_KEY=$SECRET_KEY
 export DEBUG=$DEBUG
 export ALLOWED_HOSTS=$ALLOWED_HOSTS
 export SITE_URL=$SITE_URL
-
+export GUNICORN_PORT=$GUNICORN_PORT
 
 if [[ $ENTRYPOINT_FLUSH_DB = 1 ]]
 then
@@ -35,7 +35,6 @@ else
   echo "default DJANGO_SUPERUSER wasnt set"
 fi
 
-python manage.py collectstatic
-gunicorn shortener_project.wsgi:application --bind $GUNICORN_PORT
+python manage.py collectstatic --no-input
 
 exec "$@"

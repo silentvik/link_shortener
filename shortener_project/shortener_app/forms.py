@@ -5,6 +5,11 @@ User = get_user_model()
 
 
 class UserRegistrationForm(forms.ModelForm):
+    """
+        The form that is needed for user registration.
+        Includes some custom field checks.
+    """
+
     password = forms.CharField(label='Password', widget=forms.PasswordInput)
     re_password = forms.CharField(
         label='Repeat password',
@@ -14,6 +19,14 @@ class UserRegistrationForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ('username', 'email')
+
+    def clean_password(self):
+        password = self.cleaned_data['password']
+        username = self.cleaned_data['username']
+        if username in password or password in username:
+            msg = "Password is very close to username."
+            self.add_error('password', msg)
+        return password
 
     def clean_re_password(self):
         cd = self.cleaned_data

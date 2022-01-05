@@ -1,28 +1,29 @@
 <!-- shortener_app/login.html -->
 {% extends 'shortener_app/base.html' %}
+{% block title %}Login{% endblock %}
 {% block content %}
   <h2>Login</h2>
 
     <form method="post">
         {% csrf_token %}
     <div class="form-row">
-        <input type="text" name="username" id="your-username" class="input-text" placeholder="username" required>
+        <input type="text" value='{{form.username.data}}' name="username" id="username" class="input-text" placeholder="username" required>
     </div>
     {% if form.username.errors %}
         {% for error in form.username.errors%}
-            <li style="font-family:Arial, sans-serif;font-size:15px;">{{ error|escape }}</li>
+            <li>{{ error|escape }}</li>
         {%endfor%}
     {%endif%}
     <br>
     <div class="form-row">
         <input type="password" name="password" id="password" class="input-text" placeholder="password" required>
     </div>
-    <br>
     {% if form.password.errors %}
         {% for error in form.password.errors%}
-            <li style="font-family:Arial, sans-serif;font-size:15px;">{{ error|escape }}</li>
+            <li>{{ error|escape }}</li>
         {%endfor%}
     {%endif%}
+    <br>
     <tr>
         <td><input type="submit" value="Submit"></td>
       </tr>

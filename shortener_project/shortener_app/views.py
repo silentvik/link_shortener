@@ -1,5 +1,4 @@
-from django.conf import settings
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import logout
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
@@ -7,104 +6,120 @@ from django.views import View
 from django.views.generic.edit import CreateView
 
 from shortener_app.forms import UrlForm, UserLoginForm, UserRegistrationForm
-from shortener_app.models import Urls
-from shortener_app.services import model_services, view_services
+from shortener_app.models import MyUrl
+from shortener_app.services import view_services
 
 
-class LoginView(View):
+class CreateUserView(View):
+    """
+        Available methods - GET, POST.
+        The main task is to display the user registration page.
+    """
+
     def get(self, request):
-        form = UserLoginForm()
-        response = render(
-                    request,
-                    'shortener_app/login.html',
-                    context={
-                        'form': form,
-                    }
-                )
+        """
+            Returns a rendered page (with registration fields).
+        """
+
+        response = render(request, 'shortener_app/registration.html')
         return response
 
     def post(self, request):
+        """
+            Creates a new account if the data
+            in the form was entered correctly.
+            Automatically authenticates the user
+            when creating a new account
+            (and redirects to the home page).
+        """
+
+        form = UserRegistrationForm(request.POST)
+        if form.is_valid():
+            view_services.process_user_registration(request, form)
+            return HttpResponseRedirect(reverse('home'))
+
+        response = render(
+                request,
+                'shortener_app/registration.html',
+                context={'form': form}
+            )
+        return response
+
+
+class LoginView(View):
+    """
+        Available methods - GET, POST.
+        The main task is to display the user login page.
+    """
+
+    def get(self, request):
+        """
+            Returns the rendered page (with login fields).
+        """
+
+        response = render(
+            request,
+            'shortener_app/login.html'
+        )
+        return response
+
+    def post(self, request):
+        """
+            Authenticates the user if the form was filled
+            out correctly and redirects to the home page,
+            otherwise returns the page with the login form.
+        """
+
         form = UserLoginForm(request.POST)
         if form.is_valid():
-            user = authenticate(
-                username=form.cleaned_data['username'],
-                password=form.cleaned_data['password']
-            )
-            if user is not None:
-                login(request, user)
+            login_success = view_services.user_auth_login(request, form)
+            if login_success:
                 return HttpResponseRedirect(reverse('home'))
             else:
                 msg = 'incorrent username or password'
                 form.add_error('password', msg)
 
         response = render(
-                    request,
-                    'shortener_app/login.html',
-                    context={
-                        'form': form,
-                    }
-                )
+            request,
+            'shortener_app/login.html',
+            context={
+                'form': form,
+            }
+        )
         return response
-
-
-class CreateUserView(View):
-
-    def get(self, request):
-        response = render(request, 'shortener_app/registration.html')
-        return response
-
-    def post(self, request):
-        form = UserRegistrationForm(request.POST)
-        if form.is_valid():
-            new_user = form.save(commit=False)
-            new_user.set_password(form.cleaned_data['password'])
-            new_user.save()
-            user = authenticate(
-                username=new_user.username,
-                password=request.POST['password']
-            )
-            login(request, user)
-            return HttpResponseRedirect(reverse('home'))
-        else:
-            response = render(
-                    request,
-                    'shortener_app/registration.html',
-                    context={'form': form}
-                )
-            return response
 
 
 class ShortUrlView(CreateView):
+    """
+        Home page, where the user can
+        choose what to do, including shorten the link.
+    """
+
     def get(self, request):
         form = UrlForm()
         current_user = self.request.user
-        current_username = None
-        if not current_user.is_anonymous:
-            current_username = current_user.username
-
+        current_username = view_services.get_username_or_none(current_user)
         response = render(
-                    request,
-                    'shortener_app/urlview.html',
-                    context={
-                        'form': form,
-                        'current_username': current_username,
-                    }
-                )
+            request,
+            'shortener_app/urlview.html',
+            context={
+                'form': form,
+                'current_username': current_username,
+            }
+        )
         return response
 
     def post(self, request):
         form = UrlForm(request.POST)
         current_user = self.request.user
-        current_username = None
-        if not current_user.is_anonymous:
-            current_username = current_user.username
+        current_username = view_services.get_username_or_none(current_user)
         short_url = None
         if form.is_valid():
-            short_url = model_services.create_short_url(
+            short_url = view_services.get_short_url(
                 form.cleaned_data['real_url'],
                 current_user
-            ).short_url
-            short_url = f'{settings.SITE_URL}{short_url}'
+            )
+
         response = render(
             request,
             'shortener_app/urlview.html',
@@ -135,7 +150,7 @@ def urls_list_view(request):
 
     if request.user.is_authenticated:
         urls_list = list(
-            Urls.objects.filter(
+            MyUrl.objects.filter(
                 created_by_id=request.user.id
             ).order_by('creation_date')
         )
@@ -163,8 +178,12 @@ def urls_list_view(request):
                     max_page
                 )
             )
-
+            print(f'urls_list = {urls_list}')
         elif len_urls_list == 0:
+            # This value is needed in template.
+            # If user is authenticated but hasn't short
+            # urls - we dont want to show a table of urls,
+            # but want to show some message.
             view_page = 0
 
     response = render(
@@ -182,7 +201,11 @@ def urls_list_view(request):
 
 
 def redirect_view(request, short_url):
-    url = get_object_or_404(Urls, short_url=short_url)
+    """
+        Redirects to the original link.
+    """
+
+    url = get_object_or_404(MyUrl, short_url=short_url)
     url.used_count += 1
     url.save()
     return HttpResponseRedirect(url.real_url)

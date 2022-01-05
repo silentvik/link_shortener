@@ -1,47 +1,52 @@
 {% extends 'shortener_app/base.html' %}
-{% block content %}
-  <h2>User Registration</h2>
 
-    <form method="post">
+{% block title %}Account registration{% endblock %}
+{% block content %}
+
+  <h2 class='hat_message'>User Registration</h2>
+
+    <form class="form-row" method="post">
         {% csrf_token %}
         <div class="form-row">
-            <input type="text" name="username" id="username" class="input-text" placeholder="username" required>
+            <input type="text" value='{{form.username.data}}' name="username" id="username" class="input-text" placeholder="username" maxlength="30" minlength="3" required>
         </div>
         {% if form.username.errors %}
             {% for error in form.username.errors%}
-                <ul style="font-family:Arial, sans-serif;font-size:15px;">{{ error|escape }}</ul>
+                <li>{{ error|escape }}</li>
             {%endfor%}
         {%endif%}
         <br>
+
         <div class="form-row">
-            <input type="text" name="email" id="email" class="input-text" placeholder="email (optional)">
+            <input type="text" value='{{form.email.data}}' name="email" id="email" class="input-text" placeholder="email (optional)">
         </div>
         {% if form.email.errors %}
             {% for error in form.email.errors%}
-                <ul style="font-family:Arial, sans-serif;font-size:15px;">{{ error|escape }}</ul>
+                <li>{{ error|escape }}</li>
             {%endfor%}
         {%endif%}
         <br>
-        <div class="form-row">
-            <input type="password" name="password" id="password" class="input-text" placeholder="password" required>
-        </div>
-        <br>
-        {% if form.password.errors %}
-            {% for error in form.password.errors%}
-                <li style="font-family:Arial, sans-serif;font-size:15px;">{{ error|escape }}</li>
-            {%endfor%}
-        {%endif%}
 
         <div class="form-row">
-            <input type="password" name="re_password" id="re_password" class="input-text" placeholder="re_password" required>
+            <input type="password" value='' name="password" id="password" class="input-text" placeholder="password" maxlength="180" minlength="8" required >
         </div>
+        {% if form.password.errors %}
+            {% for error in form.password.errors%}
+                <li>{{ error|escape }}</li>
+            {%endfor%}
+        {%endif%}
         <br>
+
+        <div class="form-row">
+            <input type="password" value='' name="re_password" id="re_password" class="input-text" placeholder="re_password" maxlength="180" minlength="8" required>
+        </div>
         {% if form.re_password.errors %}
             {% for error in form.re_password.errors%}
-                <li style="font-family:Arial, sans-serif;font-size:15px;">{{ error|escape }}</li>
+                <li>{{ error|escape }}</li>
             {%endfor%}
-            <br>
         {%endif%}
+        <br>
+
         <tr>
             <td><input type="submit" value="Submit"></td>
         </tr>

@@ -5,6 +5,7 @@ services:
       ./shortener_project
     env_file:
       - .env.dev
+    command: gunicorn shortener_project.wsgi:application --bind ${GUNICORN_PORT}
     ports:
       - 8000:8000
     volumes:
@@ -18,6 +19,28 @@ services:
       - "80:80"
     depends_on:
       - web
-
+  tests:
+    # All tests here so far.
+    build: ./shortener_project
+    env_file:
+      - .env.dev
+    command: >
+      sh -c "pytest -s --showlocals"
+    ports:
+      - 8000:8000
+    volumes:
+      - ./shortener_project/:/usr/src/app/
+      - "static:/static"
+  django:
+    build:
+      ./shortener_project
+    env_file:
+      - .env.dev
+    command: python manage.py runserver 0.0.0.0:8000
+    ports:
+      - 8000:8000
+    volumes:
+      - ./shortener_project/:/usr/src/app/
+      - "static:/static"
 volumes:
   static:

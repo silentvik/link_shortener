@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from shortener_app.models import Urls
+from shortener_app.models import MyUrl
 
 
 class UrlsAdmin(admin.ModelAdmin):
@@ -14,4 +14,4 @@ class UrlsAdmin(admin.ModelAdmin):
     ordering = ('-creation_date',)
 
 
-admin.site.register(Urls, UrlsAdmin)
+admin.site.register(MyUrl, UrlsAdmin)

@@ -1,21 +1,21 @@
 import string
 from random import choice
 
-from shortener_app.models import Urls
+from shortener_app.models import MyUrl
 
 CHAR_LIST = string.ascii_uppercase + string.digits + string.ascii_lowercase
 
 
-def create_short_url(real_url, current_user):
+def create_url(real_url, current_user):
     """
-        Creates an Urls object and returns it.
+        Creates MyUrl object and returns it.
     """
 
     current_user_id = 0
-    if current_user.is_authenticated:
+    if current_user.id:
         current_user_id = current_user.id
 
-    new_url_inst = Urls.objects.create(
+    new_url_inst = MyUrl.objects.create(
         real_url=real_url,
         created_by_id=current_user_id,
         short_url=make_new_short_url(),
@@ -39,9 +39,8 @@ def make_new_short_url():
     """
 
     max_length = 6
-    urls = list(Urls.objects.all())
+    urls = list(MyUrl.objects.all())
 
-    print(f'urls = {urls}')
     while True:
         short_url = generate_short_url(max_length)
         if short_url not in urls:

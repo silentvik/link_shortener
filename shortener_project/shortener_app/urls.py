@@ -10,7 +10,7 @@ urlpatterns = [
     path("login/", views.LoginView.as_view(), name="login"),
     path("urlslist/", views.urls_list_view, name="urlslist"),
 
-    # redirect urls
+    # urls with redirection/views with redirection
     path("", views.home_redirect),
     path("logout/", views.logout_view, name="logout"),
     path("<path:short_url>", views.redirect_view, name="redirect"),
