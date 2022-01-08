@@ -1,6 +1,6 @@
 # Link shortener
-<b> Custom link shortener (only functionality, no css/js). </b><br>
-(Test task)
+<b> Custom link shortener http://shrt.tw1.ru/. </b><br>
+(Test task) (No mobile support so far)
 <br>
 <br>
 
