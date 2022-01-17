@@ -1,5 +1,5 @@
 # Link shortener
-<b> Custom link shortener (available at http://shrt.tw1.ru/ ). </b><br>
+
 (Test task from company) (No mobile support so far)
 <br>
 <br>
